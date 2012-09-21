@@ -1,0 +1,18 @@
+{
+    "name": "99designs/moa",
+    "description": "A lightweight data mapper for mongoDB and PHP 5.3+",
+    "keywords": ["datamapper", "odm", "orm", "activerecord", "mongodb", "99designs"],
+    "license": "MIT",
+    "authors": [
+        { "name": "Luke Cawood", "email": "luke.cawood@99designs.com" }
+    ],
+    "require": {
+        "php": ">=5.3.2"
+    },
+    "require-dev": {
+        "mockery/mockery": ">=0.7.2"
+    },
+    "autoload": {
+        "psr-0": { "Moa": "lib" }
+    }
+}
