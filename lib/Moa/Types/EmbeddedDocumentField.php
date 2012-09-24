@@ -2,6 +2,8 @@
 
 namespace Moa\Types;
 
+use \Moa;
+
 class EmbeddedDocumentField extends Type
 {
     protected $defaultOptions = array(
@@ -16,7 +18,16 @@ class EmbeddedDocumentField extends Type
         if (isset($value) && !$value instanceof $type)
             $this->error('is not an instance of '.$type);
         if (isset($value))
-            $value->validate();
+        {
+            try
+            {
+                $value->validate();
+            }
+            catch (Moa\DomainObject\ValidationException $e)
+            {
+                $this->error('failed validation with message "'.$e->getMessage().'"');
+            }
+        }
     }
 
     public function toMongo(&$doc, &$mongoDoc, $key)
