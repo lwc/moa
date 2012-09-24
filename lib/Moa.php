@@ -2,76 +2,80 @@
 
 class Moa
 {
-	private static $instance;
+    private static $instance;
 
-	private
-		$conn,
-		$dbMap = array(),
-		$finders = array();
+    private
+        $dbMap = array(),
+        $finders = array();
 
-	public function __construct($conn, $defaultDbName)
-	{
-		$this->conn = $conn;
-		$this->dbMap['default'] = $defaultDbName;
-	}
+    public function __construct($mongoDb)
+    {
+        $this->dbMap['default'] = $mongoDb;
+    }
 
-	public function addDatabase($name, $alias=null)
-	{
-		$alias ?: $name;
-		$this->dbMap[$alias] = $name;
-	}
+    public function addDatabase($name, $mongoDb)
+    {
+        $this->dbMap[$name] = $mongoDb;
+    }
 
     public function finderFor($className)
     {
-		if (!isset($this->finders[$className]))
+        if (!isset($this->finders[$className]))
             $this->finders[$className] = $this->createFinder($className);
         return $this->finders[$className];
     }
 
     public function createFinder($className)
     {
-		$this->lazyConnect();
-		$alias = $className::getDatabaseName();
-		$db = $this->conn->selectDB($this->dbMap[$alias]);
+        $dbName = $className::getDatabaseName();
+        $this->lazyConnect($dbName);
+        
+        $db = $this->dbMap[$dbName];
         $collection = $db->selectCollection($className::getCollectionName());
         $this->ensureIndexes($className, $collection, true);
         return new Moa\DomainObject\Finder($collection, $className);
     }
 
     public function ensureIndexes($className, $collection, $background)
-	{
-		foreach ($className::indexes() as $name => $index)
-		{
-			$keys = $index['keys'];
-			$options = $index['options'];
-			$options['background'] = $background;
-			$options['safe'] = !$background;
-			$options['name'] = $name;
-			$collection->ensureIndex($keys, $options);
-		}
-	}
+    {
+        foreach ($className::indexes() as $name => $index)
+        {
+            $keys = $index['keys'];
+            $options = $index['options'];
+            $options['background'] = $background;
+            $options['safe'] = !$background;
+            $options['name'] = $name;
+            $collection->ensureIndex($keys, $options);
+        }
+    }
 
-	private function lazyConnect()
-	{
-		$connFactory = $this->conn;
-		if (is_callable($connFactory))
-		{
-			$this->conn = $connFactory();
-		}
-	}
+    private function lazyConnect($dbName)
+    {
+        if (!isset($this->dbMap[$dbName]))
+            throw new Moa\Exception('No database registered for "'.$dbName.'"');
 
-	public static function setup($conn, $defaultDbName)
-	{
-		return self::reset(new self($conn, $defaultDbName));
-	}
+        $factory = $this->dbMap[$dbName];
 
-	public static function instance()
-	{
-		return self::$instance;
-	}
+        if (is_callable($factory))
+        {
+            $this->dbMap[$dbName] = $factory();
+        }
+        if (!$this->dbMap[$dbName] instanceof \MongoDB)
+            throw new Moa\Exception('Invalid MongoDB instance registered for "'.$dbName.'"');
+    }
 
-	public static function reset($instance)
-	{
-		return self::$instance = $instance;
-	}
+    public static function setup($mongoDb)
+    {
+        return self::reset(new self($mongoDb));
+    }
+
+    public static function instance()
+    {
+        return self::$instance;
+    }
+
+    public static function reset($instance)
+    {
+        return self::$instance = $instance;
+    }
 }
