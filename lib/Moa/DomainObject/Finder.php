@@ -30,9 +30,10 @@ class Finder
 
     public function save($document, $options=array())
     {
-        if (is_callable(array($document, 'toMongo')))
-            $document = $document->toMongo();
-        return $this->collection->save($document, $options);
+        $mongoDoc = $document->toMongo();
+        $res = $this->collection->save($mongoDoc, $options);
+        $document->fromMongo($mongoDoc);
+        return $res;
     }
 
     public function __call($func, $args)

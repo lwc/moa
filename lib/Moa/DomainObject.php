@@ -8,7 +8,7 @@ abstract class DomainObject extends Document
     public function save()
     {
 		$this->validate();
-        return self::finder()->save($this);
+        return self::finder()->save($this, array('safe'=> true));
     }
 
     public static function indexes()
