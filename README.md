@@ -3,9 +3,11 @@
 Moa is an Object - Document Mapper, built to persist business domain objects in mongoDB.
 
 ### Why?
-- Current PHP solutions in this space fall into one of two categories: they are either massive bloated abstractions or they dont do anything useful
-- Moa built around the concept that mongo query tools are already pretty good, all that's missing is some validation and typed de/serialisation
+- Does the bare minimum to be useful
+- Mongo query methods are already pretty good, all that's missing is some validation and typed de/serialisation
 - Built to integrate easily into existing applications
+- Zero dependencies
+- Well tested
 - Easy to create custom types with de/serialisation behaviours and validation rules
 
 
@@ -16,7 +18,7 @@ Moa is an Object - Document Mapper, built to persist business domain objects in 
 
 ### Getting Started
 
-Somewhere in your app start up code, add
+In your app start up code, add something that looks like the following:
 
 ```php
 <?php
@@ -68,8 +70,8 @@ class TestDocument extends Moa\DomainObject
 ```
 
 - For a full list of field types and their behaviours, see the Moa\Types namespace
-- Indexes may also be defined
-- Domain objects can also specify the database they want to persist to
+- Indexes may also be defined (override `DomainObject::indexes()`)
+- Domain objects can also specify the database they want to persist to (override `DomainObject::getDatabaseName()`)
 
 ### Querying
 
