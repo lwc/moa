@@ -22,7 +22,28 @@ Somewhere in your app start up code, add
 <?php
 
 $connection = new Mongo(); // or whatever
-Moa::setup($connection, 'my_database');
+Moa::setup($connection->mydatabase);
+```
+
+Optionally, a callback can be provided to lazily connect on demand:
+
+```php
+<?php
+
+Moa::setup(function() {
+    $connection = new Mongo();
+    return $connection->someDb; 
+});
+```
+
+Also, extra databases can be configured:
+
+```php
+<?php
+
+$connection = new Mongo(); // or whatever
+Moa::setup($connection->mydatabase);
+Moa::instance()->addDatabase('anotherDb', $connection->differentDb); // also takes a callback
 ```
 
 ### Defining Models
@@ -46,8 +67,9 @@ class TestDocument extends Moa\DomainObject
 }
 ```
 
-For a full list of field types and their behaviours, see SOMEURL
-
+- For a full list of field types and their behaviours, see the Moa\Types namespace
+- Indexes may also be defined
+- Domain objects can also specify the database they want to persist to
 
 ### Querying
 
@@ -67,6 +89,9 @@ $doc = TestDocument::findOne(array('myString'=>'value')); // this could except
 // Documents may be saved via a call to save()
 $doc->myInt = 123;
 $doc->save();
+
+// Documents can be deleted
+TestDocument::remove(array('myString' => 'value')); // Deletes all documents with a field 'myString' with value of 'value'
 ```
 
 
