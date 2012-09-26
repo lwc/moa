@@ -63,4 +63,15 @@ abstract class DomainObject extends Document
         $finder = static::finder();
         return call_user_func_array(array($finder, $func), $args);
     }
+
+    public function id()
+    {
+        if ($this->saved())
+            return $this->_id;
+    }
+
+    public function saved()
+    {
+        return isset($this->_id);
+    }
 }
