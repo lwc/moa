@@ -32,7 +32,7 @@ class Finder
     {
         $mongoDoc = $document->toMongo();
         $res = $this->collection->save($mongoDoc, $options);
-        $document->fromMongo($mongoDoc);
+        $document->_id = $mongoDoc['_id'];
         return $res;
     }
 
