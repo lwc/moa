@@ -10,8 +10,18 @@ class Document
 
     public function __construct($data=null)
     {
+        foreach ($this->properties() as $property => $type)
+        {
+            $type->initialise($this->data, $property);
+        }
+
         if (is_array($data))
-            $this->data = $data;
+        {
+            foreach ($data as $key => $value)
+            {
+                $this->__set($key, $value);
+            }
+        }
     }
 
     public function fromMongo($mongoDoc)
@@ -58,12 +68,21 @@ class Document
 
     public function __get($key)
     {
+        if (isset($this->data[$key]) && $this->data[$key] instanceof \Moa\DomainObject\LazyProperty)
+            return $this->data[$key]->get();
         return $this->data[$key];
     }
 
     public function __set($key, $value)
     {
-        $this->data[$key] = $value;
+        if (isset($this->data[$key]) && $this->data[$key] instanceof \Moa\DomainObject\LazyProperty)
+        {
+            $this->data[$key]->set($value);
+        }
+        else
+        {
+            $this->data[$key] = $value;
+        }
     }
 
     public function __isset($key)

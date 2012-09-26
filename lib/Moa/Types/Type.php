@@ -20,6 +20,10 @@ class Type
         return $this->options['required'];
     }
 
+    public function initialise(&$doc, $key)
+    {
+    }
+
     public function validate($value)
     {
         if ($this->isRequired() && !isset($value))
