@@ -5,10 +5,37 @@ use \Moa;
 
 abstract class DomainObject extends Document
 {
+    protected function beforeSave()
+    {
+    }
+
+    protected function afterSave()
+    {
+    }
+
+    protected function beforeLoad()
+    {
+    }
+
+    protected function afterLoad()
+    {
+    }
+
     public function save()
     {
+        $this->beforeSave();
 		$this->validate();
-        return self::finder()->save($this, array('safe'=> true));
+        $result = self::finder()->save($this, array('safe'=> true));
+        $this->afterSave();
+        return $result;
+    }
+
+    public function fromMongo($mongoDoc)
+    {
+        $this->beforeLoad();
+        $result = parent::fromMongo($mongoDoc);
+        $this->afterLoad();
+        return $result;
     }
 
     public static function indexes()

@@ -2,7 +2,7 @@
 
 namespace Moa;
 use \Moa;
-
+use \Moa\DomainObject;
 
 class Document
 {
