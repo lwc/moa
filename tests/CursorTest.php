@@ -13,6 +13,7 @@ class CursorTest extends MoaTest
         $res = $wrappedCursor->doStuff();
 
         $this->assertTrue($res);
+        $this->assertSame($cursor, $wrappedCursor->getRawCursor());
     }
 
     public function testDecorationPropagates()
@@ -37,5 +38,23 @@ class CursorTest extends MoaTest
 
         $this->assertEquals(get_class($model), 'MyModel');
         $this->assertEquals($model->name, 'Luke');
+    }
+
+    public function testIteration()
+    {
+        $cursor = Mockery::mock('MongoCursor');
+        $cursor->shouldReceive('rewind')->once();
+        $cursor->shouldReceive('valid')->twice()->andReturn(true, false);
+        $cursor->shouldReceive('current')->once()->andReturn(array('key'=>'value'));
+        $cursor->shouldReceive('next')->once();
+        $cursor->shouldReceive('key')->once()->andReturn(0);
+
+        $wrappedCursor = new Moa\DomainObject\Cursor($cursor, 'MyModel');
+        
+        foreach ($wrappedCursor as $i => $model)
+        {
+            $this->assertInstanceOf('MyModel', $model);
+            $this->assertEquals('value', $model->key);
+        }
     }
 }
