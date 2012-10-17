@@ -13,7 +13,7 @@ Moa is an Object - Document Mapper, built to persist business domain objects in 
 
 ### Installation
 
-- Install via composer :TODO:
+- Install via composer: `composer require 99designs/moa`
 - via github https://github.com/99designs/moa
 
 ### Getting Started
