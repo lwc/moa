@@ -3,69 +3,32 @@
 namespace Moa\DomainObject;
 use \Moa;
 
-class ReferenceProperty implements Moa\DomainObject\LazyProperty
+class ReferenceProperty extends Moa\DomainObject\LazyProperty
 {
-    private
-        $id,
-        $type,
-        $instance
-        ;
-
-    public function __construct($type)
+    protected function equals($instance, $identity)
     {
-        $this->type = $type;
+        if ($identity['id'] != $instance->id())
+            return false;
+        if ($identity['type'] != get_class($instance))
+            return false;
+        return true;
     }
 
-    public function getIdentity()
+    protected function createIdentity($instance)
     {
-        if (isset($this->instance))
-        {
-            if (!$this->instance->saved())
-                $this->instance->save();
-
-            $this->id = $this->instance->id();
-            $this->type = get_class($this->instance);
-        }
+        if (!$instance->saved())
+            $instance->save();
 
         return array(
-            'id' => $this->id,
-            'type' => $this->type
+            'id' => $instance->id(),
+            'type' => get_class($instance)
         );
     }
 
-    public function setIdentity($identity)
+    protected function loadInstance($identity)
     {
-        $this->id = $identity['id'];
-        $this->type = $identity['type'];
-        $this->instance = null;
-    }
-
-    public function hasValue()
-    {
-        return ($this->id || $this->instance);
-    }
-
-    public function get()
-    {
-        if ($this->instance)
-            return $this->instance;
-
-        if ($this->id == null)
-            return null;
-
-        return $this->instance = $this->loadModel();
-    }
-
-    public function set($instance)
-    {
-        $this->instance = $instance;
-        $this->id = null;
-    }
-
-    private function loadModel()
-    {
-        return Moa::instance()->finderFor($this->type)->findOne(array(
-            '_id' => $this->id
+        return Moa::instance()->finderFor($identity['type'])->findOne(array(
+            '_id' => $identity['id']
         ));
     }
 }

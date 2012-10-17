@@ -10,11 +10,6 @@ class Document
 
     public function __construct($data=null)
     {
-        foreach ($this->properties() as $property => $type)
-        {
-            $type->initialise($this->data, $property);
-        }
-
         if (is_array($data))
         {
             foreach ($data as $key => $value)
@@ -64,34 +59,44 @@ class Document
     public function properties()
     {
         return array();
-    }    
+    }
+
+    private function property($key)
+    {
+        $properties = $this->properties();
+        if (array_key_exists($key, $properties))
+            return $properties[$key];
+    }
 
     public function __get($key)
     {
-        if (isset($this->data[$key]) && $this->data[$key] instanceof \Moa\DomainObject\LazyProperty)
-            return $this->data[$key]->get();
+        $property = $this->property($key);
+        if ($property && $property->isLazy())
+            return $property->get($this->data, $key);
         return $this->data[$key];
     }
 
     public function __set($key, $value)
     {
-        if (isset($this->data[$key]) && $this->data[$key] instanceof \Moa\DomainObject\LazyProperty)
-        {
-            $this->data[$key]->set($value);
-        }
-        else
-        {
-            $this->data[$key] = $value;
-        }
+        $property = $this->property($key);
+        if ($property && $property->isLazy())
+            return $property->set($this->data, $key , $value);
+        return $this->data[$key] = $value;
     }
 
     public function __isset($key)
     {
+        $property = $this->property($key);
+        if ($property && $property->isLazy())
+            return $property->hasValue($this->data, $key);        
         return isset($this->data[$key]);
     }
 
     public function __unset($key)
     {
+        $property = $this->property($key);
+        if ($property && $property->isLazy())
+            return $property->del($this->data, $key);         
         unset($this->data[$key]);
     }   
 }

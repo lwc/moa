@@ -4,24 +4,20 @@ namespace Moa\Types;
 
 use \Moa;
 
-class ReferenceField extends Type
+class ReferenceField extends LazyType
 {
     protected $defaultOptions = array(
         'required' => false,
         'type' => null
     );
 
-    public function initialise(&$doc, $key)
-    {
-        $doc[$key] = new Moa\DomainObject\ReferenceProperty($this->options['type']);
-    }
-
     public function validate($value)
     {
-        parent::validate($value);
-        $type = $this->options['type'];
         $value = $value->get();
-        if (isset($value) && !$value instanceof $type)
+        parent::validate($value);
+
+        $type = $this->options['type'];
+        if (isset($value) && $type && !$value instanceof $type)
             $this->error('is not an instance of '.$type);
         if (isset($value) && !$value->saved())
         {
@@ -38,25 +34,60 @@ class ReferenceField extends Type
 
     public function toMongo(&$doc, &$mongoDoc, $key)
     {
-        if (isset($doc[$key]) && $doc[$key]->hasValue())
+        $property = $this->initialise($doc, $key);
+        if ($property->hasValue())
         {
-            $identity = $doc[$key]->getIdentity();
+            $identity = $property->getIdentity();
             $mongoDoc[$key] = $identity['id'];
             $mongoDoc[$key.'__type'] = $identity['type'];
         }
         else
+        {
             $mongoDoc[$key] = null;
+            $mongoDoc[$key.'__type'] = null;
+        }
     }
 
     public function fromMongo(&$doc, &$mongoDoc, $key)
     {
-        $this->initialise($doc, $key);
+        $property = $this->initialise($doc, $key);
         if (isset($mongoDoc[$key]))
         {
-            $doc[$key]->setIdentity(array(
+            $property->setIdentity(array(
                 'id' => $mongoDoc[$key],
                 'type' => $mongoDoc[$key.'__type']
             ));
         }
     }
+
+    public function get(&$doc, $key)
+    {
+        $property = $this->initialise($doc, $key);
+        return $property->get();
+    }
+
+    public function set(&$doc, $key, $value)
+    {
+        $property = $this->initialise($doc, $key);
+        $property->set($value);
+    }
+
+    public function del(&$doc, $key)
+    {
+        $property = $this->initialise($doc, $key);
+        $property->del();
+    }
+
+    public function hasValue(&$doc, $key)
+    {
+        $property = $this->initialise($doc, $key);
+        return $property->hasValue();
+    }
+
+    private function initialise(&$doc, $key)
+    {
+        if (!isset($doc[$key]))
+            $doc[$key] = new Moa\DomainObject\ReferenceProperty();
+        return $doc[$key];
+    }    
 }

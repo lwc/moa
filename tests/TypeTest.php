@@ -200,6 +200,58 @@ class TypeTest extends MoaTest
         $this->assertEquals('Luke Cawood', $doc['someDoc']->name);  
     }
 
+    public function testReferenceField()
+    {
+        $type = new Moa\Types\ReferenceField(array('type'=>'MyModel'));
+        $prop = new Moa\DomainObject\ReferenceProperty();
+        $prop->set(123);
+        $this->expectValidationFailure($type, $prop);
+        $prop->set('dgfdf');
+        $this->expectValidationFailure($type, $prop);
+        $prop->set(array());
+        $this->expectValidationFailure($type, $prop);
+        $prop->set(true);
+        $this->expectValidationFailure($type, $prop);
+        $prop->set(new MyDocument());
+        $this->expectValidationFailure($type, $prop);        
+        $prop->set(null);
+        $this->expectValidationSuccess($type, $prop);
+        $prop->set(new MyModel());
+        $this->expectValidationSuccess($type, $prop);
+
+        $type = new Moa\Types\ReferenceField(array('type'=>'MyModel', 'required' => true));
+        $prop = new Moa\DomainObject\ReferenceProperty();
+        $prop->set(null);
+        $this->expectValidationFailure($type, $prop);
+        $prop->set(new MyModel());
+        $this->expectValidationSuccess($type, $prop);        
+    }
+
+    public function testReferenceFieldToMongo()
+    {
+        $type = new Moa\Types\ReferenceField(array('type'=>'MyModel'));
+        $prop = new Moa\DomainObject\ReferenceProperty();
+        $prop->set(new MyModel(array('_id' => 100, 'name' => 'Luke Cawood')));
+        $doc = array('someDoc' => $prop);
+        $mongoDoc = array();
+        $type->toMongo($doc, $mongoDoc, 'someDoc');
+        $this->assertEquals($mongoDoc['someDoc'], 100);
+        $this->assertEquals($mongoDoc['someDoc__type'], 'MyModel');
+    }
+
+    public function testReferenceFieldFromMongo()
+    {
+        $type = new Moa\Types\ReferenceField(array('type'=>'MyModel'));
+        $doc = array();
+        $mongoDoc = array('someDoc' => 100, 'someDoc__type' => 'MyModel');
+        $type->fromMongo($doc, $mongoDoc, 'someDoc');
+
+        $identity = $doc['someDoc']->getIdentity();
+
+        $this->assertEquals($identity['id'], 100);
+        $this->assertEquals($identity['type'], 'MyModel');
+    }
+
     private function expectValidationFailure($type, $value)
     {
         try

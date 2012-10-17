@@ -20,8 +20,9 @@ class Type
         return $this->options['required'];
     }
 
-    public function initialise(&$doc, $key)
+    public function isLazy()
     {
+        return false;
     }
 
     public function validate($value)
