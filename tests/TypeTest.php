@@ -68,6 +68,11 @@ class TypeTest extends MoaTest
         $mongoDoc = array();
         $type->toMongo($doc, $mongoDoc, 'someNum');
         $this->assertTrue(is_float($mongoDoc['someNum']));
+
+        $doc = array('someNum' => 123.00);
+        $mongoDoc = array();
+        $type->toMongo($doc, $mongoDoc, 'someNum');
+        $this->assertTrue(is_float($mongoDoc['someNum']));        
     }
 
     public function testTypelessArrayField()
@@ -119,6 +124,22 @@ class TypeTest extends MoaTest
         $mongoDoc = array();
         $type->toMongo($doc, $mongoDoc, 'someNum');
         $this->assertTrue(is_float($mongoDoc['someNum'][0]));       
+    }
+
+
+    public function testTypedArrayFieldPropagatesFromMongo()
+    {
+        $type = new Moa\Types\ArrayField(array(
+            'required' => true,
+            'type'=> new Moa\Types\EmbeddedDocumentField(array('type'=>'MyModel'))
+        ));
+
+        $doc = array();
+        $mongoDoc = array('someThings' => array(array('key'=>'value')));
+        $type->fromMongo($doc, $mongoDoc, 'someThings');
+
+        $this->assertInstanceOf('MyModel', $doc['someThings'][0]);
+        $this->assertEquals('value', $doc['someThings'][0]->key);
     }
 
     public function testDateField()

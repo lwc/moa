@@ -12,6 +12,17 @@ class TestDocument extends Moa\Document
             'myString' => new Moa\Types\StringField(),
             'myArray' => new Moa\Types\ArrayField(),
             'myOwnSelf' => new Moa\Types\EmbeddedDocumentField(array('type'=>'TestDocument')),
+            'myRef' => new Moa\Types\ReferenceField(array('type'=>'TestModel')),
+        );
+    }
+}
+
+class TestModel extends Moa\DomainObject
+{
+    public function properties()
+    {
+        return array(
+            'number' => new Moa\Types\IntegerField(array('required' => true))
         );
     }
 }
@@ -54,6 +65,26 @@ class DocumentTest extends MoaTest
         $this->expectValidationSuccess($doc);
     }
 
+    public function testRelatedFailure()
+    {
+        $doc = new TestDocument(array(
+            'myInt' => 4345
+        ));
+        $this->expectValidationSuccess($doc);
+
+        $doc->myRef = 3456;
+        $this->expectValidationFailure($doc);
+
+        $doc->myRef = new MyModel();
+        $this->expectValidationFailure($doc);
+
+        $doc->myRef = new TestModel();
+        $this->expectValidationFailure($doc);
+
+        $doc->myRef->number = 234;
+        $this->expectValidationSuccess($doc);        
+    }
+
     public function testFromMongo()
     {
         $mongoDoc = array(
@@ -93,6 +124,63 @@ class DocumentTest extends MoaTest
         $this->assertEquals($mongoDoc['myArray']['key'], 'value');
         $this->assertTrue(is_array($mongoDoc['myOwnSelf']));
         $this->assertEquals($mongoDoc['myOwnSelf']['myOtherKey'], true);
+    }
+
+    public function testIsset()
+    {
+        $doc = new TestDocument(array(
+            'myInt' => 100,
+            'myArray' => array(
+                'key' => 'value',
+            ),
+            'myOwnSelf' => new TestDocument(array(
+                'myOtherKey' => true
+            ))
+        ));
+
+        $this->assertTrue(isset($doc->myInt));
+        $this->assertFalse(isset($doc->nothingHere));
+        $this->assertTrue(isset($doc->myOwnSelf));
+        $this->assertTrue(isset($doc->myOwnSelf->myOtherKey));
+        $this->assertFalse(isset($doc->myOwnSelf->myInt));
+        $this->assertFalse(isset($doc->myRef));
+    }
+
+    public function testUnset()
+    {
+         $doc = new TestDocument(array(
+            'myInt' => 100,
+            'myArray' => array(
+                'key' => 'value',
+            ),
+            'myOwnSelf' => new TestDocument(array(
+                'myOtherKey' => true
+            ))
+        ));
+
+        $this->assertTrue(isset($doc->myInt));
+        unset($doc->myInt);
+        $this->assertFalse(isset($doc->myInt));
+
+        $this->assertTrue(isset($doc->myOwnSelf));
+        $this->assertTrue(isset($doc->myOwnSelf->myOtherKey));
+
+        unset($doc->myOwnSelf->myOtherKey);
+        $this->assertFalse(isset($doc->myOwnSelf->myOtherKey));
+
+        unset($doc->myOwnSelf);
+        $this->assertFalse(isset($doc->myOwnSelf));
+
+        // Lazy property example
+        $model = new MyModel();
+        $this->assertFalse(isset($doc->myRef));
+        $doc->myRef = $model;
+        $this->assertTrue(isset($doc->myRef));
+        $this->assertSame($model, $doc->myRef);
+
+        unset($doc->myRef);
+        $this->assertFalse(isset($doc->myRef));
+
     }
 
     private function expectValidationFailure($document)

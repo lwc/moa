@@ -13,7 +13,11 @@ class ReferenceField extends LazyType
 
     public function validate($value)
     {
-        $value = $value->get();
+        if (isset($value) && $value instanceof Moa\DomainObject\LazyProperty)
+            $value = $value->get();
+        else
+            $value = null;
+
         parent::validate($value);
 
         $type = $this->options['type'];
