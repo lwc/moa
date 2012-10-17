@@ -46,4 +46,32 @@ class FinderTest extends MoaTest
 
         $this->assertEquals(get_class($res), 'Moa\DomainObject\Finder');
     }
+
+    public function testSave()
+    {
+        \Mockery::getConfiguration()->setInternalClassMethodParamMap(
+            'MongoCollection',
+            'save',
+            array('&$data', '$options = array()')
+        );
+
+        $collection = Mockery::mock('MongoCollection')
+            ->shouldReceive('save')
+            ->with(array('key'=>'value'), array())
+            ->andReturnUsing(function(&$mongoDoc) {
+                $mongoDoc['_id'] = 100;
+            })
+            ->mock();
+
+        $wrappedCollection = new Moa\DomainObject\Finder($collection, 'MyModel');
+        
+        $model = new MyModel(array(
+            'key' => 'value'
+        ));
+
+        $wrappedCollection->save($model);
+
+        $this->assertEquals(100, $model->id());
+
+    }
 }
