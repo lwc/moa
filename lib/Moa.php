@@ -41,7 +41,9 @@ class Moa
         foreach ($className::indexes() as $name => $index)
         {
             $keys = $index['keys'];
-            $options = $index['options'];
+            $options = array();
+            if (isset($index['options']))
+                $options = $index['options'];
             $options['background'] = $background;
             $options['safe'] = !$background;
             $options['name'] = $name;

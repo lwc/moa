@@ -47,8 +47,8 @@ class ReferenceField extends LazyType
         }
         else
         {
-            $mongoDoc[$key] = null;
-            $mongoDoc[$key.'__type'] = null;
+            unset($mongoDoc[$key]);
+            unset($mongoDoc[$key.'__type']);
         }
     }
 
@@ -90,8 +90,10 @@ class ReferenceField extends LazyType
 
     private function initialise(&$doc, $key)
     {
-        if (!isset($doc[$key]))
-            $doc[$key] = new Moa\DomainObject\ReferenceProperty();
+        if (isset($doc[$key]) && $doc[$key] instanceof Moa\DomainObject\ReferenceProperty)
+            return $doc[$key];
+
+        $doc[$key] = new Moa\DomainObject\ReferenceProperty();
         return $doc[$key];
     }    
 }
