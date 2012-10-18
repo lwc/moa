@@ -1,6 +1,6 @@
 {
     "name": "99designs/moa",
-    "version": "0.0.9",
+    "version": "1.0.0a",
     "type": "library",    
     "description": "The rightweight data mapper for mongoDB and PHP 5.3+",
     "keywords": ["datamapper", "odm", "orm", "activerecord", "mongo", "mongodb", "99designs"],
