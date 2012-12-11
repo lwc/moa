@@ -11,6 +11,11 @@ class ReferenceField extends LazyType
         'type' => null
     );
 
+	public static function construct($type=null)
+	{
+		return new ReferenceField(array('type' => $type));
+	}
+
     public function validate($value)
     {
         if (isset($value) && $value instanceof Moa\DomainObject\LazyProperty)
@@ -95,5 +100,5 @@ class ReferenceField extends LazyType
 
         $doc[$key] = new Moa\DomainObject\ReferenceProperty();
         return $doc[$key];
-    }    
+    }
 }

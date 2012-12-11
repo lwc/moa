@@ -11,6 +11,11 @@ class ArrayField extends LazyType
         'type' => null
     );
 
+	public static function construct($type=null)
+	{
+		return new ArrayField(array('type' => $type));
+	}
+
     public function validate($value)
     {
         if (isset($value) && $value instanceof Moa\DomainObject\ArrayProperty)

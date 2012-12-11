@@ -9,7 +9,12 @@ class EmbeddedDocumentField extends Type
     protected $defaultOptions = array(
         'required' => false,
         'type' => null
-    );    
+    );
+
+	public static function construct($type=null)
+	{
+		return new EmbeddedDocumentField(array('type' => $type));
+	}
 
     public function validate($value)
     {
@@ -44,5 +49,5 @@ class EmbeddedDocumentField extends Type
             $model = new $type();
             $doc[$key] = $model->fromMongo($mongoDoc[$key]);
         }
-    }    
+    }
 }

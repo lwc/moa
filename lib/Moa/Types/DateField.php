@@ -9,6 +9,11 @@ class DateField extends Type
         'storeTimezone' => false
     );
 
+	public function storeTimezone($storeTimezone)
+	{
+		$this->options['storeTimezone'] = $storeTimezone;
+	}
+
     public function validate($value)
     {
         parent::validate($value);
