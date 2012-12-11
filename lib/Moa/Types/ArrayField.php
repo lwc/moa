@@ -2,7 +2,9 @@
 
 namespace Moa\Types;
 
-class ArrayField extends Type
+use \Moa;
+
+class ArrayField extends LazyType
 {
     protected $defaultOptions = array(
         'required' => false,
@@ -11,6 +13,15 @@ class ArrayField extends Type
 
     public function validate($value)
     {
+        if (isset($value) && $value instanceof Moa\DomainObject\ArrayProperty)
+		{
+            $value = $value->get();
+			if (isset($value))
+				$value = (array) $value;
+		}
+        else
+            $value = null;
+
         parent::validate($value);
         if (isset($value) && !is_array($value))
             $this->error('is not an array');
@@ -38,31 +49,50 @@ class ArrayField extends Type
 
     public function toMongo(&$doc, &$mongoDoc, $key)
     {
-        $type = $this->options['type'];
-        if ($type && isset($doc[$key]))
-        {
-            $mongoDoc[$key] = array();
-            foreach ($doc[$key] as $k => $v)
-            {
-                $type->toMongo($doc[$key], $mongoDoc[$key], $k);
-            }
-        }
-        else
-            parent::toMongo($doc, $mongoDoc, $key);
+		$property = $this->initialise($doc, $key);
+		$mongoDoc[$key] = $property->getIdentity();
     }
 
     public function fromMongo(&$doc, &$mongoDoc, $key)
     {
+		$property = $this->initialise($doc, $key);
         $type = $this->options['type'];
-        if ($type && isset($mongoDoc[$key]))
-        {
-            $doc[$key] = array();
-            foreach ($mongoDoc[$key] as $k => $v)
-            {
-                $type->fromMongo($doc[$key], $mongoDoc[$key], $k);
-            }
-        }
-        else
-            parent::fromMongo($doc, $mongoDoc, $key);
-    }    
+		if (isset($mongoDoc[$key]))
+		{
+			$property->setIdentity($mongoDoc[$key]);
+		}
+    }
+
+    public function get(&$doc, $key)
+    {
+        $property = $this->initialise($doc, $key);
+        return $property->get();
+    }
+
+    public function set(&$doc, $key, $value)
+    {
+        $property = $this->initialise($doc, $key);
+        $property->set($value);
+    }
+
+    public function del(&$doc, $key)
+    {
+        $property = $this->initialise($doc, $key);
+        $property->del();
+    }
+
+    public function hasValue(&$doc, $key)
+    {
+        $property = $this->initialise($doc, $key);
+        return $property->hasValue();
+    }
+
+    private function initialise(&$doc, $key)
+    {
+        if (isset($doc[$key]) && $doc[$key] instanceof Moa\DomainObject\ArrayProperty)
+            return $doc[$key];
+
+        $doc[$key] = new Moa\DomainObject\ArrayProperty($this->options['type']);
+        return $doc[$key];
+    }
 }
