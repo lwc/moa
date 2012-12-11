@@ -7,15 +7,13 @@ class FloatField extends Type
     public function validate($value)
     {
         parent::validate($value);
-        if (isset($value) && (!is_float($value) && !is_integer($value)))
-            $this->error('is not a float');
+        if (isset($value) && !is_numeric($value))
+            $this->error('is not numeric');
     }
 
     public function toMongo(&$doc, &$mongoDoc, $key)
     {
-        if (array_key_exists($key, $doc) && is_integer($doc[$key]))
+        if (isset($doc[$key]))
             $mongoDoc[$key] = (float)$doc[$key];
-        else
-            parent::toMongo($doc, $mongoDoc, $key);
-    }    
+    }
 }

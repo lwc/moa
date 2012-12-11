@@ -7,7 +7,7 @@ class DateField extends Type
     protected $defaultOptions = array(
         'required' => false,
         'storeTimezone' => false
-    );   
+    );
 
     public function validate($value)
     {
@@ -20,12 +20,12 @@ class DateField extends Type
     {
         if (!array_key_exists($key, $doc))
             return;
-        
+
         $mongoDoc[$key] = new \MongoDate($doc[$key]->format('U'));
 
         if ($this->options['storeTimezone'])
             $mongoDoc[$key.'__tz'] = $doc[$key]->getTimezone()->getName();
-        
+
     }
 
     public function fromMongo(&$doc, &$mongoDoc, $key)
