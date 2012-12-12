@@ -14,12 +14,13 @@ class Type
     public static function construct()
 	{
 		$className = get_called_class();
-		return $className();
+		return new $className();
 	}
 
-	public function required($required)
+	public function required($required=true)
 	{
 		$this->options['required'] = $required;
+		return $this;
 	}
 
 	public function __construct($options = null)
