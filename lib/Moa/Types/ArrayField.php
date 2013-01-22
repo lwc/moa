@@ -32,21 +32,17 @@ class ArrayField extends LazyType
         $type = $this->options['type'];
         if (isset($value) && $type)
         {
-            $result = array_reduce($value, function($result, $item) use ($type) {
-
+            foreach ($value as $k => $item)
+            {
                 try
                 {
                     $type->validate($item);
-                    return $result && true;
                 }
                 catch(TypeException $e)
                 {
-                    return false;
+                    $this->error("element '$k' ".$e->getMessage());
                 }
-            }, true);
-
-            if (!$result)
-                $this->error('contains types other than '.get_class($type));
+            }
         }
     }
 
