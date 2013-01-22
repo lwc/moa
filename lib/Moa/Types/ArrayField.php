@@ -22,10 +22,8 @@ class ArrayField extends LazyType
 		{
             $value = $value->get();
 			if (isset($value))
-				$value = (array) $value;
+				$value = (array)$value;
 		}
-        else
-            $value = null;
 
         parent::validate($value);
         if (isset($value) && !is_array($value))
