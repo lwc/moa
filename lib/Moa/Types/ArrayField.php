@@ -29,6 +29,9 @@ class ArrayField extends LazyType
         if (isset($value) && !is_array($value))
             $this->error('is not an array');
 
+        if ($this->isRequired() && count($value) == 0)
+            $this->error('cannot be empty');
+
         $type = $this->options['type'];
         if (isset($value) && $type)
         {

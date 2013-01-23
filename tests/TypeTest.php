@@ -87,7 +87,8 @@ class TypeTest extends MoaTest
 
         $type = new Moa\Types\ArrayField(array('required' => true));
         $this->expectValidationFailure($type, null);
-        $this->expectValidationSuccess($type, array());
+        $this->expectValidationFailure($type, array());
+        $this->expectValidationSuccess($type, array(1));
 
     }
 
@@ -108,7 +109,7 @@ class TypeTest extends MoaTest
             'type'=> new Moa\Types\IntegerField()
         ));
         $this->expectValidationFailure($type, null);
-        $this->expectValidationSuccess($type, array());
+        $this->expectValidationFailure($type, array());
         $this->expectValidationSuccess($type, array(1,2,3));
     }
 
