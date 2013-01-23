@@ -258,15 +258,14 @@ class TypeTest extends MoaTest
         $doc = array('someDoc' => $prop);
         $mongoDoc = array();
         $type->toMongo($doc, $mongoDoc, 'someDoc');
-        $this->assertEquals($mongoDoc['someDoc'], 100);
-        $this->assertEquals($mongoDoc['someDoc__type'], 'MyModel');
+        $this->assertEquals($mongoDoc['someDoc'], array('id' => 100, 'type' => 'MyModel'));
     }
 
     public function testReferenceFieldFromMongo()
     {
         $type = new Moa\Types\ReferenceField(array('type'=>'MyModel'));
         $doc = array();
-        $mongoDoc = array('someDoc' => 100, 'someDoc__type' => 'MyModel');
+        $mongoDoc = array('someDoc' => array('id' => 100, 'type' => 'MyModel'));
         $type->fromMongo($doc, $mongoDoc, 'someDoc');
 
         $identity = $doc['someDoc']->getIdentity();

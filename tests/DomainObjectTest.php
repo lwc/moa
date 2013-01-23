@@ -113,7 +113,7 @@ class DomainObjectTest extends MoaTest
         // post
         $this->injectDocument(
             array('title' => 'Test'),
-            array('title' => 'Test', 'site' => 123, 'site__type' => 'Site')
+            array('title' => 'Test', 'site' =>array('id' => 123, 'type' => 'Site'))
         );
         // site
         $this->injectDocument(

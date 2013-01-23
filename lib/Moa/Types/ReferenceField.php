@@ -47,13 +47,11 @@ class ReferenceField extends LazyType
         if ($property->hasValue())
         {
             $identity = $property->getIdentity();
-            $mongoDoc[$key] = $identity['id'];
-            $mongoDoc[$key.'__type'] = $identity['type'];
+            $mongoDoc[$key] = $identity;
         }
         else
         {
             unset($mongoDoc[$key]);
-            unset($mongoDoc[$key.'__type']);
         }
     }
 
@@ -62,10 +60,7 @@ class ReferenceField extends LazyType
         $property = $this->initialise($doc, $key);
         if (isset($mongoDoc[$key]))
         {
-            $property->setIdentity(array(
-                'id' => $mongoDoc[$key],
-                'type' => $mongoDoc[$key.'__type']
-            ));
+            $property->setIdentity($mongoDoc[$key]);
         }
     }
 
