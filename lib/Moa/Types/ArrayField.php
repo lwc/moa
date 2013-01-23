@@ -11,19 +11,19 @@ class ArrayField extends LazyType
         'type' => null
     );
 
-	public static function construct($type=null)
-	{
-		return new ArrayField(array('type' => $type));
-	}
+    public static function construct($type=null)
+    {
+        return new ArrayField(array('type' => $type));
+    }
 
     public function validate($value)
     {
         if (isset($value) && $value instanceof Moa\DomainObject\ArrayProperty)
-		{
+        {
             $value = $value->get();
-			if (isset($value))
-				$value = (array)$value;
-		}
+            if (isset($value))
+                $value = (array)$value;
+        }
 
         parent::validate($value);
         if (isset($value) && !is_array($value))
@@ -48,18 +48,18 @@ class ArrayField extends LazyType
 
     public function toMongo(&$doc, &$mongoDoc, $key)
     {
-		$property = $this->initialise($doc, $key);
-		$mongoDoc[$key] = $property->getIdentity();
+        $property = $this->initialise($doc, $key);
+        $mongoDoc[$key] = $property->getIdentity();
     }
 
     public function fromMongo(&$doc, &$mongoDoc, $key)
     {
-		$property = $this->initialise($doc, $key);
+        $property = $this->initialise($doc, $key);
         $type = $this->options['type'];
-		if (isset($mongoDoc[$key]))
-		{
-			$property->setIdentity($mongoDoc[$key]);
-		}
+        if (isset($mongoDoc[$key]))
+        {
+            $property->setIdentity($mongoDoc[$key]);
+        }
     }
 
     public function get(&$doc, $key)
