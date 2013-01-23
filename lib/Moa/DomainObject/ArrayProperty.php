@@ -13,6 +13,7 @@ class ArrayProperty
 	public function __construct($type)
 	{
 		$this->type = $type;
+		$this->arrayObject = $this->createArrayObject(array(), false);
 	}
 
 	/**
