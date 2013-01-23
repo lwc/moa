@@ -17,13 +17,13 @@ class StringField extends Type
             $mongoDoc[$key] = (string)$doc[$key];
     }
 
-	/**
-	 * Scalar values and any object with a __toString method can be cast to a string
-	 * @param mixed $value
-	 * @return boolean
-	 */
-	private function isStringable($value)
-	{
-		return (is_scalar($value) || (is_object($value) && is_callable(array($value, '__toString'))));
-	}
+    /**
+     * Scalar values and any object with a __toString method can be cast to a string
+     * @param mixed $value
+     * @return boolean
+     */
+    private function isStringable($value)
+    {
+        return (is_scalar($value) || (is_object($value) && is_callable(array($value, '__toString'))));
+    }
 }

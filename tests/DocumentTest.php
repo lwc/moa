@@ -8,7 +8,7 @@ class TestDocument extends Moa\Document
     public function properties()
     {
         return array(
-            'myInt' => new Moa\Types\IntegerField(array('required' => true)),            
+            'myInt' => new Moa\Types\IntegerField(array('required' => true)),
             'myString' => new Moa\Types\StringField(),
             'myArray' => new Moa\Types\ArrayField(),
             'myOwnSelf' => new Moa\Types\EmbeddedDocumentField(array('type'=>'TestDocument')),
@@ -48,7 +48,7 @@ class DocumentTest extends MoaTest
         $this->expectValidationSuccess($doc);
 
         $doc->myString = array();
-        $this->expectValidationFailure($doc);   
+        $this->expectValidationFailure($doc);
     }
 
     public function testEmbeddedFailure()
@@ -82,7 +82,7 @@ class DocumentTest extends MoaTest
         $this->expectValidationFailure($doc);
 
         $doc->myRef->number = 234;
-        $this->expectValidationSuccess($doc);        
+        $this->expectValidationSuccess($doc);
     }
 
     public function testFromMongo()
@@ -187,7 +187,7 @@ class DocumentTest extends MoaTest
     {
         try
         {
-            $document->validate();       
+            $document->validate();
             $this->fail('Expected validation to fail');
         }
         catch (Moa\DomainObject\ValidationException $e)
@@ -200,11 +200,11 @@ class DocumentTest extends MoaTest
     {
         try
         {
-            $document->validate();       
+            $document->validate();
         }
         catch (Moa\DomainObject\ValidationException $e)
         {
             $this->fail('Expected validation to succeed, failed with message: '.$e->getMessage());
         }
-    }    
+    }
 }

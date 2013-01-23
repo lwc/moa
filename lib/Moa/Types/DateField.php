@@ -7,27 +7,27 @@ class DateField extends Type
     protected $defaultOptions = array(
         'required' => false,
         'storeTimezone' => false,
-		'autoNowNull' => false,
-		'autoNow' => false
+        'autoNowNull' => false,
+        'autoNow' => false
     );
 
-	public function autoNow($autoNow=true)
-	{
-		$this->options['autoNow'] = $autoNow;
-		return $this;
-	}
+    public function autoNow($autoNow=true)
+    {
+        $this->options['autoNow'] = $autoNow;
+        return $this;
+    }
 
-	public function autoNowNull($autoNowNull=true)
-	{
-		$this->options['autoNowNull'] = $autoNowNull;
-		return $this;
-	}
+    public function autoNowNull($autoNowNull=true)
+    {
+        $this->options['autoNowNull'] = $autoNowNull;
+        return $this;
+    }
 
-	public function storeTimezone($storeTimezone=true)
-	{
-		$this->options['storeTimezone'] = $storeTimezone;
-		return $this;
-	}
+    public function storeTimezone($storeTimezone=true)
+    {
+        $this->options['storeTimezone'] = $storeTimezone;
+        return $this;
+    }
 
     public function validate($value)
     {
@@ -38,12 +38,12 @@ class DateField extends Type
 
     public function toMongo(&$doc, &$mongoDoc, $key)
     {
-		if ($this->options['autoNow'])
-			$doc[$key] = new \DateTime();
+        if ($this->options['autoNow'])
+            $doc[$key] = new \DateTime();
         elseif (!isset($doc[$key]) && $this->options['autoNowNull'])
             $doc[$key] = new \DateTime();
-		elseif (!isset($doc[$key]))
-			return;
+        elseif (!isset($doc[$key]))
+            return;
 
         $mongoDoc[$key] = new \MongoDate($doc[$key]->format('U'));
 

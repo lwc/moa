@@ -15,7 +15,7 @@ class Comment extends Moa\Document
             'body' => new Moa\Types\StringField(array('required' => true)),
             'rating' => new Moa\Types\FloatField(),
         );
-    }    
+    }
 }
 
 class BlogPost extends Moa\DomainObject
@@ -47,7 +47,7 @@ class DomainObjectTest extends MoaTest
             'MongoCollection',
             'save',
             array('&$data', '$options = array()')
-        );       
+        );
 
         $this->collection = \Mockery::mock('MongoCollection');
         $this->collection->shouldReceive('ensureIndex');
@@ -61,7 +61,7 @@ class DomainObjectTest extends MoaTest
     {
         $this->collection
             ->shouldReceive('save')
-            ->once()        
+            ->once()
             ->with($document, array('safe' => true))
             ->andReturnUsing(function(&$mongoDoc) {
                 $mongoDoc['_id'] = 100;

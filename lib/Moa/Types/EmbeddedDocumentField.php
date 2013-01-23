@@ -11,10 +11,10 @@ class EmbeddedDocumentField extends Type
         'type' => null
     );
 
-	public static function construct($type=null)
-	{
-		return new EmbeddedDocumentField(array('type' => $type));
-	}
+    public static function construct($type=null)
+    {
+        return new EmbeddedDocumentField(array('type' => $type));
+    }
 
     public function validate($value)
     {

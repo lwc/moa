@@ -11,7 +11,7 @@ class TypeTest extends MoaTest
         $this->expectValidationSuccess($type, 123);
         $this->expectValidationSuccess($type, 'dgfdf');
         $this->expectValidationFailure($type, array());
-        $this->expectValidationSuccess($type, 123.123);     
+        $this->expectValidationSuccess($type, 123.123);
         $this->expectValidationSuccess($type, null);
         $this->expectValidationSuccess($type, false);
 
@@ -40,7 +40,7 @@ class TypeTest extends MoaTest
         $this->expectValidationFailure($type, 'hello');
         $this->expectValidationFailure($type, true);
         $this->expectValidationFailure($type, array());
-        $this->expectValidationSuccess($type, 123.123);     
+        $this->expectValidationSuccess($type, 123.123);
         $this->expectValidationSuccess($type, null);
         $this->expectValidationSuccess($type, 123);
 
@@ -72,7 +72,7 @@ class TypeTest extends MoaTest
         $doc = array('someNum' => 123.00);
         $mongoDoc = array();
         $type->toMongo($doc, $mongoDoc, 'someNum');
-        $this->assertTrue(is_float($mongoDoc['someNum']));        
+        $this->assertTrue(is_float($mongoDoc['someNum']));
     }
 
     public function testTypelessArrayField()
@@ -98,7 +98,7 @@ class TypeTest extends MoaTest
         $this->expectValidationFailure($type, true);
         $this->expectValidationFailure($type, 123.234);
         $this->expectValidationFailure($type, 123);
-        $this->expectValidationSuccess($type, array(1,'2',3));      
+        $this->expectValidationSuccess($type, array(1,'2',3));
         $this->expectValidationSuccess($type, null);
         $this->expectValidationSuccess($type, array());
         $this->expectValidationSuccess($type, array(1,2,3));
@@ -124,7 +124,7 @@ class TypeTest extends MoaTest
 
         $mongoDoc = array();
         $type->toMongo($doc, $mongoDoc, 'someNum');
-        $this->assertTrue(is_float($mongoDoc['someNum'][0]));       
+        $this->assertTrue(is_float($mongoDoc['someNum'][0]));
     }
 
 
@@ -150,7 +150,7 @@ class TypeTest extends MoaTest
         $d = new DateTime('2010-01-01', $tz);
 
         $type = new Moa\Types\DateField();
-        $this->expectValidationFailure($type, 123); 
+        $this->expectValidationFailure($type, 123);
         $this->expectValidationSuccess($type, null);
         $this->expectValidationSuccess($type, $d);
 
@@ -163,7 +163,7 @@ class TypeTest extends MoaTest
         $type->toMongo($doc, $mongoDoc, 'someDate');
         $this->assertTrue($mongoDoc['someDate'] instanceof MongoDate);
         $this->assertEquals($d->getTimestamp(), $mongoDoc['someDate']->sec);
-    }   
+    }
 
     public function testDateFieldWithTimezone()
     {
@@ -220,7 +220,7 @@ class TypeTest extends MoaTest
         $mongoDoc = array('someDoc' => array('name' => 'Luke Cawood'));
         $type->fromMongo($doc, $mongoDoc, 'someDoc');
         $this->assertTrue($doc['someDoc'] instanceof MyDocument);
-        $this->assertEquals('Luke Cawood', $doc['someDoc']->name);  
+        $this->assertEquals('Luke Cawood', $doc['someDoc']->name);
     }
 
     public function testReferenceField()
@@ -236,7 +236,7 @@ class TypeTest extends MoaTest
         $prop->set(true);
         $this->expectValidationFailure($type, $prop);
         $prop->set(new MyDocument());
-        $this->expectValidationFailure($type, $prop);        
+        $this->expectValidationFailure($type, $prop);
         $prop->set(null);
         $this->expectValidationSuccess($type, $prop);
         $prop->set(new MyModel());
@@ -247,7 +247,7 @@ class TypeTest extends MoaTest
         $prop->set(null);
         $this->expectValidationFailure($type, $prop);
         $prop->set(new MyModel());
-        $this->expectValidationSuccess($type, $prop);        
+        $this->expectValidationSuccess($type, $prop);
     }
 
     public function testReferenceFieldToMongo()
@@ -280,7 +280,7 @@ class TypeTest extends MoaTest
         {
             $type->validate($value);
             if (is_object($value))
-                $value = get_class($value);         
+                $value = get_class($value);
             $this->fail('Expected validation to fail for type '.get_class($type).' with value '.$value);
         }
         catch (Moa\Types\TypeException $e)
@@ -298,7 +298,7 @@ class TypeTest extends MoaTest
         catch (Moa\Types\TypeException $e)
         {
             if (is_object($value))
-                $value = get_class($value);         
+                $value = get_class($value);
             $this->fail('Expected validation to succeed for type '.get_class($type).' with value '.$value);
         }
     }

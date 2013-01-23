@@ -24,7 +24,7 @@ abstract class DomainObject extends Document
     public function save()
     {
         $this->beforeSave();
-		$this->validate();
+        $this->validate();
         $result = self::finder()->save($this, array('safe'=> true));
         $this->afterSave();
         return $result;
@@ -43,15 +43,15 @@ abstract class DomainObject extends Document
         return array();
     }
 
-	public static function getCollectionName()
+    public static function getCollectionName()
     {
         return strtolower(array_pop(explode('_', get_called_class())));
     }
 
-	public static function getDatabaseName()
-	{
-		return 'default';
-	}
+    public static function getDatabaseName()
+    {
+        return 'default';
+    }
 
     public static function finder()
     {

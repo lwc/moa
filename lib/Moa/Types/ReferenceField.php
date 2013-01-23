@@ -11,10 +11,10 @@ class ReferenceField extends LazyType
         'type' => null
     );
 
-	public static function construct($type=null)
-	{
-		return new ReferenceField(array('type' => $type));
-	}
+    public static function construct($type=null)
+    {
+        return new ReferenceField(array('type' => $type));
+    }
 
     public function validate($value)
     {

@@ -56,7 +56,7 @@ class IntegrationTest // extends MoaTest
         $coll->shouldReceive('ensureIndex')->once()->with('title', array(
             'background' => true,
             'safe' => false,
-            'name' => 'title'       
+            'name' => 'title'
         ));
         $db->shouldReceive('selectCollection')->once()->andReturn($coll);
 

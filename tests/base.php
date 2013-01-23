@@ -6,7 +6,7 @@ date_default_timezone_set('Australia/Melbourne');
 
 class MyModel extends Moa\DomainObject
 {
-    
+
 }
 
 class MyDocument extends Moa\Document
@@ -19,5 +19,5 @@ class MoaTest extends PHPUnit_Framework_TestCase
     public function tearDown()
     {
         Mockery::close();
-    }   
+    }
 }

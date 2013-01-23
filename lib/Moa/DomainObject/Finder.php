@@ -17,7 +17,7 @@ class Finder
 
     public function find($query=array(), $fields=array())
     {
-		$cursor = $this->collection->find($query, $fields);
+        $cursor = $this->collection->find($query, $fields);
         return new Moa\DomainObject\Cursor($cursor, $this->className);
     }
 

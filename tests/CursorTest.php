@@ -33,7 +33,7 @@ class CursorTest extends MoaTest
         $cursor->shouldReceive('getNext')->andReturn(array('name' => 'Luke'));
 
         $wrappedCursor = new Moa\DomainObject\Cursor($cursor, 'MyModel');
-        
+
         $model = $wrappedCursor->getNext();
 
         $this->assertEquals(get_class($model), 'MyModel');
@@ -50,7 +50,7 @@ class CursorTest extends MoaTest
         $cursor->shouldReceive('key')->once()->andReturn(0);
 
         $wrappedCursor = new Moa\DomainObject\Cursor($cursor, 'MyModel');
-        
+
         foreach ($wrappedCursor as $i => $model)
         {
             $this->assertInstanceOf('MyModel', $model);

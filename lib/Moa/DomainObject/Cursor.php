@@ -29,7 +29,7 @@ class Cursor implements \Iterator
     {
         $className = $this->className;
         $model = new $className();
-        return $model->fromMongo($document);        
+        return $model->fromMongo($document);
     }
 
     public function current()

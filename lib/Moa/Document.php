@@ -6,7 +6,7 @@ use \Moa\DomainObject;
 
 class Document
 {
-    private $data=array(); 
+    private $data=array();
 
     public function __construct($data=null)
     {
@@ -50,7 +50,7 @@ class Document
             catch (Moa\Types\TypeException $e)
             {
                 throw new Moa\DomainObject\ValidationException(
-                    get_class($this).'::'.$property.' '.$e->getMessage() 
+                    get_class($this).'::'.$property.' '.$e->getMessage()
                 );
             }
         }
@@ -88,7 +88,7 @@ class Document
     {
         $property = $this->property($key);
         if ($property && $property->isLazy())
-            return $property->hasValue($this->data, $key);        
+            return $property->hasValue($this->data, $key);
         return isset($this->data[$key]);
     }
 
@@ -96,7 +96,7 @@ class Document
     {
         $property = $this->property($key);
         if ($property && $property->isLazy())
-            return $property->del($this->data, $key);         
+            return $property->del($this->data, $key);
         unset($this->data[$key]);
-    }   
+    }
 }

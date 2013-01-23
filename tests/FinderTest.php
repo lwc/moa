@@ -31,7 +31,7 @@ class FinderTest extends MoaTest
 
         $wrappedCursor = new Moa\DomainObject\Finder($collection, 'MyModel');
         $res = $wrappedCursor->findOne(array('name'=>'Luke'));
-        
+
         $this->assertEquals(get_class($res), 'MyModel');
         $this->assertEquals($res->awesome, true);
     }
@@ -64,7 +64,7 @@ class FinderTest extends MoaTest
             ->mock();
 
         $wrappedCollection = new Moa\DomainObject\Finder($collection, 'MyModel');
-        
+
         $model = new MyModel(array(
             'key' => 'value'
         ));

@@ -29,7 +29,7 @@ class Moa
     {
         $dbName = $className::getDatabaseName();
         $this->lazyConnect($dbName);
-        
+
         $db = $this->dbMap[$dbName];
         $collection = $db->selectCollection($className::getCollectionName());
         $this->ensureIndexes($className, $collection, true);

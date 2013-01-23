@@ -95,7 +95,7 @@ class LazyTest extends MoaTest
         $this->assertEquals(true, $prop->get());
 
         $prop->del();
-        $this->assertNull($prop->get());        
+        $this->assertNull($prop->get());
         $this->assertFalse($prop->hasValue());
 
         $prop->setIdentity(true);
@@ -103,7 +103,7 @@ class LazyTest extends MoaTest
         $this->assertEquals(true, $prop->getIdentity());
 
         $prop->del();
-        $this->assertNull($prop->getIdentity());        
+        $this->assertNull($prop->getIdentity());
         $this->assertFalse($prop->hasValue());
     }
 

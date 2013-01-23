@@ -8,22 +8,22 @@ class Type
         'required' => false,
     );
 
-	/**
-	 * @return Type
-	 */
+    /**
+     * @return Type
+     */
     public static function construct()
-	{
-		$className = get_called_class();
-		return new $className();
-	}
+    {
+        $className = get_called_class();
+        return new $className();
+    }
 
-	public function required($required=true)
-	{
-		$this->options['required'] = $required;
-		return $this;
-	}
+    public function required($required=true)
+    {
+        $this->options['required'] = $required;
+        return $this;
+    }
 
-	public function __construct($options = null)
+    public function __construct($options = null)
     {
         if (!$options)
             $options = array();
