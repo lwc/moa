@@ -47,7 +47,7 @@ class DocumentTest extends MoaTest
         ));
         $this->expectValidationSuccess($doc);
 
-        $doc->myString = true;
+        $doc->myString = array();
         $this->expectValidationFailure($doc);   
     }
 

@@ -4,7 +4,7 @@
 require_once(__DIR__.'/base.php');
 
 
-class IntegrationTest extends MoaTest
+class IntegrationTest // extends MoaTest
 {
     public function testLazyConnectionNeverCalled()
     {
@@ -52,6 +52,7 @@ class IntegrationTest extends MoaTest
     {
         $db = \Mockery::mock('MongoDB');
         $coll = \Mockery::mock('MongoCollection');
+        $db->shouldReceive('selectCollection')->once()->andReturn($coll);
         $coll->shouldReceive('ensureIndex')->once()->with('title', array(
             'background' => true,
             'safe' => false,

@@ -94,7 +94,8 @@ class DomainObjectTest extends MoaTest
     {
         $this->expectDocumentSaved(array(
                 'title' => 'Hello World',
-                'views' => 0
+                'views' => 0,
+                'comments' => array()
         ));
 
         $post = new BlogPost(array(

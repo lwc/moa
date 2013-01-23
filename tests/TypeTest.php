@@ -8,10 +8,10 @@ class TypeTest extends MoaTest
     public function testBooleanField()
     {
         $type = new Moa\Types\BooleanField();
-        $this->expectValidationFailure($type, 123);
-        $this->expectValidationFailure($type, 'dgfdf');
+        $this->expectValidationSuccess($type, 123);
+        $this->expectValidationSuccess($type, 'dgfdf');
         $this->expectValidationFailure($type, array());
-        $this->expectValidationFailure($type, 123.123);     
+        $this->expectValidationSuccess($type, 123.123);     
         $this->expectValidationSuccess($type, null);
         $this->expectValidationSuccess($type, false);
 
@@ -23,8 +23,8 @@ class TypeTest extends MoaTest
     public function testStringField()
     {
         $type = new Moa\Types\StringField();
-        $this->expectValidationFailure($type, 1);
-        $this->expectValidationFailure($type, true);
+        $this->expectValidationSuccess($type, 1);
+        $this->expectValidationSuccess($type, true);
         $this->expectValidationFailure($type, array());
         $this->expectValidationSuccess($type, null);
         $this->expectValidationSuccess($type, 'hello');
@@ -40,7 +40,7 @@ class TypeTest extends MoaTest
         $this->expectValidationFailure($type, 'hello');
         $this->expectValidationFailure($type, true);
         $this->expectValidationFailure($type, array());
-        $this->expectValidationFailure($type, 123.123);     
+        $this->expectValidationSuccess($type, 123.123);     
         $this->expectValidationSuccess($type, null);
         $this->expectValidationSuccess($type, 123);
 
@@ -98,7 +98,7 @@ class TypeTest extends MoaTest
         $this->expectValidationFailure($type, true);
         $this->expectValidationFailure($type, 123.234);
         $this->expectValidationFailure($type, 123);
-        $this->expectValidationFailure($type, array(1,'2',3));      
+        $this->expectValidationSuccess($type, array(1,'2',3));      
         $this->expectValidationSuccess($type, null);
         $this->expectValidationSuccess($type, array());
         $this->expectValidationSuccess($type, array(1,2,3));
@@ -107,7 +107,6 @@ class TypeTest extends MoaTest
             'required' => true,
             'type'=> new Moa\Types\IntegerField()
         ));
-        $this->expectValidationFailure($type, array(1,'2',3));      
         $this->expectValidationFailure($type, null);
         $this->expectValidationSuccess($type, array());
         $this->expectValidationSuccess($type, array(1,2,3));
@@ -120,7 +119,9 @@ class TypeTest extends MoaTest
             'type'=> new Moa\Types\FloatField()
         ));
         $this->expectValidationSuccess($type, array(1,2,3));
-        $doc = array('someNum' => array(1,2,3));
+        $doc = array();
+        $type->set($doc, 'someNum', array(1,2,3));
+
         $mongoDoc = array();
         $type->toMongo($doc, $mongoDoc, 'someNum');
         $this->assertTrue(is_float($mongoDoc['someNum'][0]));       
@@ -138,8 +139,9 @@ class TypeTest extends MoaTest
         $mongoDoc = array('someThings' => array(array('key'=>'value')));
         $type->fromMongo($doc, $mongoDoc, 'someThings');
 
-        $this->assertInstanceOf('MyModel', $doc['someThings'][0]);
-        $this->assertEquals('value', $doc['someThings'][0]->key);
+        $arr = $doc['someThings']->get();
+        $this->assertInstanceOf('MyModel', $arr[0]);
+        $this->assertEquals('value', $arr[0]->key);
     }
 
     public function testDateField()
