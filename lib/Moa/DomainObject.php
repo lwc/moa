@@ -52,10 +52,12 @@ abstract class DomainObject extends Document
         $className = get_called_class();
 
         if (strpos($className, '\\') === false) {
-            return strtolower(array_pop(explode('_', get_called_class())));
+            $className = explode('_', $className);
+        } else {
+            $className = explode('\\', $className);
         }
 
-        return strtolower(array_pop(explode('\\', get_called_class())));
+        return strtolower(array_pop($className));
     }
 
     public static function getDatabaseName()
