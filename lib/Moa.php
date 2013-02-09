@@ -4,9 +4,9 @@ class Moa
 {
     private static $instance;
 
-    private
-        $dbMap = array(),
-        $finders = array();
+    private $dbMap = array();
+
+    private $finders = array();
 
     public function __construct($mongoDb)
     {
@@ -42,8 +42,9 @@ class Moa
         {
             $keys = $index['keys'];
             $options = array();
-            if (isset($index['options']))
+            if (isset($index['options'])) {
                 $options = $index['options'];
+            }
             $options['background'] = $background;
             $options['safe'] = !$background;
             $options['name'] = $name;
@@ -53,17 +54,19 @@ class Moa
 
     private function lazyConnect($dbName)
     {
-        if (!isset($this->dbMap[$dbName]))
+        if (!isset($this->dbMap[$dbName])) {
             throw new Moa\Exception('No database registered for "'.$dbName.'"');
+        }
 
         $factory = $this->dbMap[$dbName];
 
-        if (is_callable($factory))
-        {
+        if (is_callable($factory)) {
             $this->dbMap[$dbName] = $factory();
         }
-        if (!$this->dbMap[$dbName] instanceof \MongoDB)
+
+        if (!$this->dbMap[$dbName] instanceof \MongoDB) {
             throw new Moa\Exception('Invalid MongoDB instance registered for "'.$dbName.'"');
+        }
     }
 
     public static function setup($mongoDb)

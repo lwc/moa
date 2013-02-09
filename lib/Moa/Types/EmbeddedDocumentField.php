@@ -20,16 +20,14 @@ class EmbeddedDocumentField extends Type
     {
         parent::validate($value);
         $type = $this->options['type'];
-        if (isset($value) && !$value instanceof $type)
+        if (isset($value) && !$value instanceof $type) {
             $this->error('is not an instance of '.$type);
-        if (isset($value))
-        {
-            try
-            {
+        }
+
+        if (isset($value)) {
+            try {
                 $value->validate();
-            }
-            catch (Moa\DomainObject\ValidationException $e)
-            {
+            } catch (Moa\DomainObject\ValidationException $e) {
                 $this->error('failed validation with message "'.$e->getMessage().'"');
             }
         }
@@ -37,14 +35,14 @@ class EmbeddedDocumentField extends Type
 
     public function toMongo(&$doc, &$mongoDoc, $key)
     {
-        if (isset($doc[$key]))
+        if (isset($doc[$key])) {
             $mongoDoc[$key] = $doc[$key]->toMongo();
+        }
     }
 
     public function fromMongo(&$doc, &$mongoDoc, $key)
     {
-        if (isset($mongoDoc[$key]))
-        {
+        if (isset($mongoDoc[$key])) {
             $type = $this->options['type'];
             $model = new $type();
             $doc[$key] = $model->fromMongo($mongoDoc[$key]);

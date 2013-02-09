@@ -18,31 +18,28 @@ class ArrayField extends LazyType
 
     public function validate($value)
     {
-        if (isset($value) && $value instanceof Moa\DomainObject\ArrayProperty)
-        {
+        if (isset($value) && $value instanceof Moa\DomainObject\ArrayProperty) {
             $value = $value->get();
-            if (isset($value))
+            if (isset($value)) {
                 $value = (array)$value;
+            }
         }
 
         parent::validate($value);
-        if (isset($value) && !is_array($value))
+        if (isset($value) && !is_array($value)) {
             $this->error('is not an array');
+        }
 
-        if ($this->isRequired() && count($value) == 0)
+        if ($this->isRequired() && count($value) == 0) {
             $this->error('cannot be empty');
+        }
 
         $type = $this->options['type'];
-        if (isset($value) && $type)
-        {
-            foreach ($value as $k => $item)
-            {
-                try
-                {
+        if (isset($value) && $type) {
+            foreach ($value as $k => $item) {
+                try {
                     $type->validate($item);
-                }
-                catch(TypeException $e)
-                {
+                } catch(TypeException $e) {
                     $this->error("element '$k' ".$e->getMessage());
                 }
             }
@@ -59,8 +56,7 @@ class ArrayField extends LazyType
     {
         $property = $this->initialise($doc, $key);
         $type = $this->options['type'];
-        if (isset($mongoDoc[$key]))
-        {
+        if (isset($mongoDoc[$key])) {
             $property->setIdentity($mongoDoc[$key]);
         }
     }
@@ -91,8 +87,9 @@ class ArrayField extends LazyType
 
     private function initialise(&$doc, $key)
     {
-        if (isset($doc[$key]) && $doc[$key] instanceof Moa\DomainObject\ArrayProperty)
+        if (isset($doc[$key]) && $doc[$key] instanceof Moa\DomainObject\ArrayProperty) {
             return $doc[$key];
+        }
 
         $doc[$key] = new Moa\DomainObject\ArrayProperty($this->options['type']);
         return $doc[$key];

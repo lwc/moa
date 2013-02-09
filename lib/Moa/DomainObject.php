@@ -7,18 +7,22 @@ abstract class DomainObject extends Document
 {
     protected function beforeSave()
     {
+
     }
 
     protected function afterSave()
     {
+
     }
 
     protected function beforeLoad()
     {
+
     }
 
     protected function afterLoad()
     {
+
     }
 
     public function save()
@@ -47,10 +51,13 @@ abstract class DomainObject extends Document
     {
         $className = get_called_class();
 
-        if (strpos($className, '\\') === false)
-            return strtolower(array_pop(explode('_', get_called_class())));
+        if (strpos($className, '\\') === false) {
+            $className = explode('_', $className);
+        } else {
+            $className = explode('\\', $className);
+        }
 
-        return strtolower(array_pop(explode('\\', get_called_class())));
+        return strtolower(array_pop($className));
     }
 
     public static function getDatabaseName()
@@ -71,8 +78,9 @@ abstract class DomainObject extends Document
 
     public function id()
     {
-        if ($this->saved())
+        if ($this->saved()) {
             return $this->_id;
+        }
     }
 
     public function saved()
