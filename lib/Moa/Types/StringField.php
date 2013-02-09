@@ -7,8 +7,9 @@ class StringField extends Type
     public function validate($value)
     {
         parent::validate($value);
-        if (isset($value) && !$this->isStringable($value))
+        if (isset($value) && !$this->isStringable($value)) {
             $this->error('is not stringable');
+        }
     }
 
     public function toMongo(&$doc, &$mongoDoc, $key)

@@ -1,13 +1,14 @@
 <?php
 
 namespace Moa\DomainObject;
+
 use \Moa;
 
 class Cursor implements \Iterator
 {
-    private
-        $cursor,
-        $className;
+    private $cursor;
+
+    private $className;
 
     public function __construct($cursor, $className)
     {
@@ -59,8 +60,9 @@ class Cursor implements \Iterator
     {
         $res = call_user_func_array(array($this->cursor, $func), $args);
 
-        if ($res instanceof \MongoCursor)
+        if ($res instanceof \MongoCursor) {
             $res = new static($res, $this->className);
+        }
         return $res;
     }
 }
