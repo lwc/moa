@@ -18,24 +18,23 @@ class ReferenceField extends LazyType
 
     public function validate($value)
     {
-        if (isset($value) && $value instanceof Moa\DomainObject\LazyProperty)
+        if (isset($value) && $value instanceof Moa\DomainObject\LazyProperty) {
             $value = $value->get();
-        else
+        } else {
             $value = null;
+        }
 
         parent::validate($value);
 
         $type = $this->options['type'];
-        if (isset($value) && $type && !$value instanceof $type)
+        if (isset($value) && $type && !$value instanceof $type) {
             $this->error('is not an instance of '.$type);
-        if (isset($value) && !$value->saved())
-        {
-            try
-            {
+        }
+
+        if (isset($value) && !$value->saved()) {
+            try {
                 $value->validate();
-            }
-            catch (Moa\DomainObject\ValidationException $e)
-            {
+            } catch (Moa\DomainObject\ValidationException $e) {
                 $this->error('failed validation with message "'.$e->getMessage().'"');
             }
         }
@@ -44,13 +43,10 @@ class ReferenceField extends LazyType
     public function toMongo(&$doc, &$mongoDoc, $key)
     {
         $property = $this->initialise($doc, $key);
-        if ($property->hasValue())
-        {
+        if ($property->hasValue()) {
             $identity = $property->getIdentity();
             $mongoDoc[$key] = $identity;
-        }
-        else
-        {
+        } else {
             unset($mongoDoc[$key]);
         }
     }
@@ -58,8 +54,7 @@ class ReferenceField extends LazyType
     public function fromMongo(&$doc, &$mongoDoc, $key)
     {
         $property = $this->initialise($doc, $key);
-        if (isset($mongoDoc[$key]))
-        {
+        if (isset($mongoDoc[$key])) {
             $property->setIdentity($mongoDoc[$key]);
         }
     }
@@ -90,8 +85,9 @@ class ReferenceField extends LazyType
 
     private function initialise(&$doc, $key)
     {
-        if (isset($doc[$key]) && $doc[$key] instanceof Moa\DomainObject\ReferenceProperty)
+        if (isset($doc[$key]) && $doc[$key] instanceof Moa\DomainObject\ReferenceProperty) {
             return $doc[$key];
+        }
 
         $doc[$key] = new Moa\DomainObject\ReferenceProperty();
         return $doc[$key];

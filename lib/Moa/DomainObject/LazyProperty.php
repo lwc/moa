@@ -1,14 +1,14 @@
 <?php
 
 namespace Moa\DomainObject;
+
 use \Moa;
 
 abstract class LazyProperty
 {
-    private
-        $identity,
-        $instance
-        ;
+    private $identity;
+
+    private $instance;
 
     abstract protected function equals($instance, $identity);
 
@@ -23,8 +23,7 @@ abstract class LazyProperty
      */
     public function getIdentity()
     {
-        if (!isset($this->identity) && isset($this->instance))
-        {
+        if (!isset($this->identity) && isset($this->instance)) {
             $this->identity = $this->createIdentity($this->instance);
         }
 
@@ -40,8 +39,9 @@ abstract class LazyProperty
     public function setIdentity($identity)
     {
         $this->identity = $identity;
-        if ($this->instance && !$this->equals($this->instance, $identity))
+        if ($this->instance && !$this->equals($this->instance, $identity)) {
             $this->instance = null;
+        }
     }
 
     /**
@@ -59,11 +59,13 @@ abstract class LazyProperty
      */
     public function get()
     {
-        if (isset($this->instance))
+        if (isset($this->instance)) {
             return $this->instance;
+        }
 
-        if ($this->identity == null)
+        if ($this->identity == null) {
             return null;
+        }
 
         return $this->instance = $this->loadInstance($this->identity);
     }
