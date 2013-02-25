@@ -2,7 +2,7 @@
 
 Moa is an Object - Document Mapper, built to persist business domain objects in mongoDB.
 
-[![Build Status](https://travis-ci.org/boxedworks/moa.png)](https://travis-ci.org/boxedworks/moa)
+[![Build Status](https://travis-ci.org/99designs/moa.png)](https://travis-ci.org/99designs/moa)
 
 
 ### Why?
