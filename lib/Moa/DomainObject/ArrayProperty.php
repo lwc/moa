@@ -1,13 +1,14 @@
 <?php
 
 namespace Moa\DomainObject;
+
 use \Moa;
 
 class ArrayProperty
 {
-    private
-        $arrayObject,
-        $type;
+    private $arrayObject;
+
+    private $type;
 
 
     public function __construct($type)
@@ -23,14 +24,11 @@ class ArrayProperty
      */
     public function getIdentity()
     {
-        if (isset($this->arrayObject))
-        {
+        if (isset($this->arrayObject)) {
             $array = $this->arrayObject->getArrayCopy();
-            if (isset($this->type))
-            {
+            if (isset($this->type)) {
                 $doc = $array;
-                foreach ($array as $k => $v)
-                {
+                foreach ($array as $k => $v) {
                     $this->type->toMongo($doc, $array, $k);
                 }
             }
@@ -46,17 +44,16 @@ class ArrayProperty
      */
     public function setIdentity($array)
     {
-        if ($this->type && is_array($array))
-        {
+        if ($this->type && is_array($array)) {
             $mongoDoc = $array;
-            foreach ($array as $k => $v)
-            {
+            foreach ($array as $k => $v) {
                 $this->type->fromMongo($array, $mongoDoc, $k);
             }
         }
 
-        if (is_array($array))
+        if (is_array($array)) {
             $this->arrayObject = $this->createArrayObject($array, true);
+        }
     }
 
     /**
@@ -97,8 +94,9 @@ class ArrayProperty
 
     private function createArrayObject($array, $fromRaw)
     {
-        if (isset($this->type) && $this->type->isLazy())
+        if (isset($this->type) && $this->type->isLazy()) {
             return new TypedArrayObject($array, $this->type, $fromRaw);
+        }
         return new \ArrayObject($array);
     }
 }

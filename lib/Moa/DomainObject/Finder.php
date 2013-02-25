@@ -1,13 +1,13 @@
 <?php
 
 namespace Moa\DomainObject;
+
 use \Moa;
 
 class Finder
 {
-    private
-        $className,
-        $collection;
+    private $className;
+    private $collection;
 
     public function __construct($collection, $className)
     {
@@ -40,8 +40,9 @@ class Finder
     {
         $res = call_user_func_array(array($this->collection, $func), $args);
 
-        if ($res instanceof \MongoCollection)
+        if ($res instanceof \MongoCollection) {
             $res = new static($res, $this->className);
+        }
 
         return $res;
     }

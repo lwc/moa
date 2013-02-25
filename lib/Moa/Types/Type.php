@@ -25,8 +25,9 @@ class Type
 
     public function __construct($options = null)
     {
-        if (!$options)
+        if (!$options) {
             $options = array();
+        }
         $this->options = array_merge($this->defaultOptions, $options);
     }
 
@@ -42,20 +43,23 @@ class Type
 
     public function validate($value)
     {
-        if ($this->isRequired() && !isset($value))
+        if ($this->isRequired() && !isset($value)) {
             $this->error('is required');
+        }
     }
 
     public function toMongo(&$doc, &$mongoDoc, $key)
     {
-        if (array_key_exists($key, $doc))
+        if (array_key_exists($key, $doc)) {
             $mongoDoc[$key] = $doc[$key];
+        }
     }
 
     public function fromMongo(&$doc, &$mongoDoc, $key)
     {
-        if (array_key_exists($key, $mongoDoc))
+        if (array_key_exists($key, $mongoDoc)) {
             $doc[$key] = $mongoDoc[$key];
+        }
     }
 
     protected function error($reason)

@@ -1,6 +1,7 @@
 <?php
 
 namespace Moa\DomainObject;
+
 use \Moa;
 
 class TypedArrayIterator extends \ArrayIterator
@@ -24,13 +25,12 @@ class TypedArrayObject extends \ArrayObject
     {
         $this->type = $type;
 
-        if (isset($type))
-        {
+        if (isset($type)) {
             $mongoDoc = $array;
-            foreach ($array as $k => $v)
-            {
-                if (!$fromRaw)
+            foreach ($array as $k => $v) {
+                if (!$fromRaw) {
                     $this->type->set($array, $k, $v);
+                }
             }
         }
 
