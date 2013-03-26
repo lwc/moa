@@ -27,8 +27,13 @@ class ReferenceProperty extends Moa\DomainObject\LazyProperty
 
     protected function loadInstance($identity)
     {
-        return Moa::instance()->finderFor($identity['type'])->findOne(array(
-            '_id' => $identity['id']
-        ));
+        try {
+            return Moa::instance()->finderFor($identity['type'])->findOne(array(
+                '_id' => $identity['id']
+            ));
+        }
+        catch (Moa\FinderException $e) {
+            return null;
+        }
     }
 }

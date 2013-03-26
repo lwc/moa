@@ -23,10 +23,20 @@ class FinderTest extends MoaTest
     public function testFindOne()
     {
         $cursor = Mockery::mock('MongoCursor');
+        $cursor
+            ->shouldReceive('limit')
+            ->andReturn($cursor);
+        $cursor
+            ->shouldReceive('hasNext')
+            ->andReturn(true, false);
+        $cursor
+            ->shouldReceive('getNext')
+            ->andReturn(array('name'=>'Luke', 'awesome'=>true));
+
         $collection = Mockery::mock('MongoCollection')
-            ->shouldReceive('findOne')
+            ->shouldReceive('find')
             ->with(array('name'=>'Luke'), array())
-            ->andReturn(array('name'=>'Luke', 'awesome'=>true))
+            ->andReturn($cursor)
             ->mock();
 
         $wrappedCursor = new Moa\DomainObject\Finder($collection, 'MyModel');
@@ -34,6 +44,64 @@ class FinderTest extends MoaTest
 
         $this->assertEquals(get_class($res), 'MyModel');
         $this->assertEquals($res->awesome, true);
+    }
+
+    public function testFindOneZeroReturned()
+    {
+        $cursor = Mockery::mock('MongoCursor');
+        $cursor
+            ->shouldReceive('limit')
+            ->andReturn($cursor);
+        $cursor
+            ->shouldReceive('hasNext')
+            ->andReturn(false, false);
+        $cursor
+            ->shouldReceive('getNext')
+            ->andReturn(array('name'=>'Luke', 'awesome'=>true));
+
+        $collection = Mockery::mock('MongoCollection')
+            ->shouldReceive('find')
+            ->with(array('name'=>'Luke'), array())
+            ->andReturn($cursor)
+            ->mock();
+
+        $wrappedCursor = new Moa\DomainObject\Finder($collection, 'MyModel');
+
+        try {
+            $res = $wrappedCursor->findOne(array('name'=>'Luke'));
+            $this->fail('Failed to catch expected NoMatchingDocumentsException');
+        }
+        catch (Moa\NoMatchingDocumentsException $e) {
+        }
+    }
+
+    public function testFindOneMultipleReturned()
+    {
+        $cursor = Mockery::mock('MongoCursor');
+        $cursor
+            ->shouldReceive('limit')
+            ->andReturn($cursor);
+        $cursor
+            ->shouldReceive('hasNext')
+            ->andReturn(true, true);
+        $cursor
+            ->shouldReceive('getNext')
+            ->andReturn(array('name'=>'Luke', 'awesome'=>true));
+
+        $collection = Mockery::mock('MongoCollection')
+            ->shouldReceive('find')
+            ->with(array('name'=>'Luke'), array())
+            ->andReturn($cursor)
+            ->mock();
+
+        $wrappedCursor = new Moa\DomainObject\Finder($collection, 'MyModel');
+
+        try {
+            $res = $wrappedCursor->findOne(array('name'=>'Luke'));
+            $this->fail('Failed to catch expected MultipleMatchingDocumentsException');
+        }
+        catch (Moa\MultipleMatchingDocumentsException $e) {
+        }
     }
 
     public function testDecorationPropagates()

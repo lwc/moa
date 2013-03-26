@@ -23,9 +23,20 @@ class Finder
 
     public function findOne($query, $fields=array())
     {
-        $className = $this->className;
-        $document = new $className();
-        return $document->fromMongo($this->collection->findOne($query, $fields));
+        $doc = null;
+
+        $cursor = $this->find($query, $fields)->limit(2);
+        if ($cursor->hasNext()) {
+            $doc = $cursor->getNext();
+        }
+        else {
+            throw new Moa\NoMatchingDocumentsException();
+        }
+        if ($cursor->hasNext()) {
+            throw new Moa\MultipleMatchingDocumentsException();
+        }
+
+        return $doc;
     }
 
     public function save($document, $options=array())

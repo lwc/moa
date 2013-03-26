@@ -70,10 +70,21 @@ class DomainObjectTest extends MoaTest
 
     private function injectDocument($query, $document)
     {
-        $this->collection
-            ->shouldReceive('findOne')
-            ->with($query, array())
+        $cursor = Mockery::mock('MongoCursor');
+        $cursor
+            ->shouldReceive('limit')
+            ->andReturn($cursor);
+        $cursor
+            ->shouldReceive('hasNext')
+            ->andReturn(true, false, true, false);
+        $cursor
+            ->shouldReceive('getNext')
             ->andReturn($document);
+
+        $this->collection
+            ->shouldReceive('find')
+            ->with($query, array())
+            ->andReturn($cursor);
     }
 
     public function testFinderDelegates()
