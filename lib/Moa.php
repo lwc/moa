@@ -18,6 +18,12 @@ class Moa
         $this->dbMap[$name] = $mongoDb;
     }
 
+    public function getDatabase($name='default')
+    {
+        $this->lazyConnect($name);
+        return $this->dbMap[$name];
+    }
+
     public function finderFor($className)
     {
         if (!isset($this->finders[$className]))
@@ -55,17 +61,22 @@ class Moa
     private function lazyConnect($dbName)
     {
         if (!isset($this->dbMap[$dbName])) {
-            throw new Moa\Exception('No database registered for "'.$dbName.'"');
+            throw new Moa\ConnectionException('No database registered for "'.$dbName.'"');
         }
 
         $factory = $this->dbMap[$dbName];
 
-        if (is_callable($factory)) {
-            $this->dbMap[$dbName] = $factory();
+        try {
+            if (is_callable($factory)) {
+                $this->dbMap[$dbName] = $factory();
+            }
+        }
+        catch (\Exception $e) {
+            throw new Moa\ConnectionException($e->getMessage(), $e->getCode(), $e);
         }
 
         if (!$this->dbMap[$dbName] instanceof \MongoDB) {
-            throw new Moa\Exception('Invalid MongoDB instance registered for "'.$dbName.'"');
+            throw new Moa\ConnectionException('Invalid MongoDB instance registered for "'.$dbName.'"');
         }
     }
 
