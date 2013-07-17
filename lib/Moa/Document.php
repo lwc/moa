@@ -73,6 +73,8 @@ class Document
         $property = $this->property($key);
         if ($property && $property->isLazy())
             return $property->get($this->data, $key);
+        if (!isset($this->data[$key]))
+            return null;
         return $this->data[$key];
     }
 
