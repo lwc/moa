@@ -140,4 +140,35 @@ class DomainObjectTest extends MoaTest
         $this->assertEquals($site1->id(), $postSite->id());
 
     }
+
+    public function testClone()
+    {
+        $this->expectDocumentSaved(array(
+            'title' => 'Hello World',
+            'views' => 0,
+            'comments' => array()
+        ));
+
+        $post = new BlogPost(array(
+            'title' => 'Hello World',
+            'views' => 0
+        ));
+        $post->save();
+
+        $this->assertEquals(
+            $post->saved(),
+            true
+        );
+        $clone = clone($post);
+        $this->assertEquals(
+            $clone->saved(),
+            false
+        );
+
+        $post->_id = null;
+        $this->assertEquals(
+            $clone,
+            $post
+        );
+    }
 }

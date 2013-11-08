@@ -87,4 +87,13 @@ abstract class DomainObject extends Document
     {
         return isset($this->_id);
     }
+
+    /**
+     * Cloning a domain object should result in a new instance that hasn't
+     * been assigned an id.
+     */
+    public function __clone()
+    {
+        $this->_id = null;
+    }
 }
