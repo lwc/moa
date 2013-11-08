@@ -183,6 +183,24 @@ class DocumentTest extends MoaTest
 
     }
 
+    public function testToArray()
+    {
+        $data = array(
+            'myInt' => 100,
+            'myArray' => new ArrayObject(array(
+                'key' => 'value',
+            )),
+            'myOwnSelf' => new TestDocument(array(
+                'myOtherKey' => true
+            ))
+        );
+        $doc = new TestDocument($data);
+        $this->assertEquals(
+            $doc->toArray(),
+            $data
+        );
+    }
+
     private function expectValidationFailure($document)
     {
         try
