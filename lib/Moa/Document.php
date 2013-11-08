@@ -68,6 +68,22 @@ class Document
             return $properties[$key];
     }
 
+    /**
+     * Returns the object as an array.
+     * @return array
+     */
+    public function toArray()
+    {
+        $data = $this->data;
+        foreach($data as $key => $value) {
+            if (method_exists($value, 'get')) {
+                $value = $value->get();
+            }
+            $data[$key] = $value;
+        }
+        return $data;
+    }
+
     public function __get($key)
     {
         $property = $this->property($key);
